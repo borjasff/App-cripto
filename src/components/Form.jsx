@@ -34,26 +34,27 @@ const Form = ({setCoins}) => {
     //and the cripto
     const [criptoCoin, SelectCriptoCoin] = useSelectCoins('Elige tu Criptomoneda', criptos)
     //consult API
+    const consultAPI = async () =>{
+      const url = "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=20&tsym=USD"
+      //we need await to read the url, when the fetch url, the asnwer is transform in json.
+      const   answer = await fetch(url)
+      const result = await answer.json()
+      //the result need a one map in Data (value that we need and build a object)
+      const arrayCriptos =  result.Data.map( cripto => {
+
+        const object = {
+          id: cripto.CoinInfo.Name,
+          name: cripto.CoinInfo.FullName
+        }
+        return object
+      })
+      setCriptos(arrayCriptos)
+    }
+
     useEffect (() => {
-      const consultAPI = async () =>{
-        const url = "https://min-api.cryptocompare.com/data/top/mktcapfull?limit=20&tsym=USD"
-        //we need await to read the url, when the fetch url, the asnwer is transform in json.
-        const   answer = await fetch(url)
-        const result = await answer.json()
-        //the result need a one map in Data (value that we need and build a object)
-        const arrayCriptos =  result.Data.map( cripto => {
-
-          const object = {
-            id: cripto.CoinInfo.Name,
-            name: cripto.CoinInfo.FullName
-          }
-          return object
-        })
-        setCriptos(arrayCriptos)
-
-      }
       consultAPI();
     }, [])
+    
     //to validate the submit
     const handleSubmit = e => {
       e.preventDefault()

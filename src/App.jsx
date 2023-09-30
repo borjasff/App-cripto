@@ -46,25 +46,27 @@ function App() {
   const [result, setResult] = useState({})
   const [loading, setLoading] = useState(false)
 
+  const quoteCripto = async () => {
+    setLoading(true)
+    setResult({})
+    const { coin, criptoCoin} = coins
+    const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptoCoin}&tsyms=${coin}`
+
+    const answer = await fetch(url)
+    const result = await answer.json()
+    setResult(result.DISPLAY[criptoCoin][coin])
+
+    setLoading(false)
+  }
+
   //to consult the cripto in the API
   useEffect(() =>{
     if(Object.keys(coins).length > 0){
 
-      const quoteCripto = async () => {
-        setLoading(true)
-        setResult({})
-        const { coin, criptoCoin} = coins
-        const url = `https://min-api.cryptocompare.com/data/pricemultifull?fsyms=${criptoCoin}&tsyms=${coin}`
-
-        const answer = await fetch(url)
-        const result = await answer.json()
-        setResult(result.DISPLAY[criptoCoin][coin])
-
-        setLoading(false)
-      }
       quoteCripto()
     }
   }, [coins])
+  
   return (
     <>
       <Container>
